@@ -10,13 +10,38 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             height: 100vh;
             margin: 0;
             background-color: #f7f7f7;
         }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            gap: 20px; /* Add some space between the timer and the button */
+        }
+        #timer {
+            font-size: 24px;
+        }
+        #restart-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #restart-btn:hover {
+            background-color: #0056b3;
+        }
         .game-container {
             display: grid;
-            grid-template-columns: repeat(6, 100px);
+            grid-template-columns: repeat(4, 100px);
             grid-template-rows: repeat(3, 100px);
             gap: 10px;
         }
@@ -48,27 +73,20 @@
             opacity: 0;
             transition: transform 1s, opacity 1s;
         }
-        #timer {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
     </style>
 </head>
 <body>
-    <div>
+    <div class="header">
         <div id="timer">Time: 0</div>
-        <div class="game-container" id="game-container"></div>
+        <button id="restart-btn">重新开始游戏</button>
     </div>
+    <div class="game-container" id="game-container"></div>
 
     <script>
         let cards = [
             '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
-            '🍉', '🍉', '🍊', '🍊', '🍍', '🍍',
-            '🍒', '🍒', '🍓', '🍓', '🍑', '🍑',
-            '🍈', '🍈', '🍋', '🍋', '🍍', '🍍'
-        ].slice(0, 18); // 9对卡片
-
-        cards = cards.sort(() => Math.random() - 0.5); // Shuffle cards
+            '🍉', '🍉', '🍊', '🍊', '🍍', '🍍'
+        ]; // 6对卡片
 
         let flippedCards = [];
         let matchedCards = [];
@@ -76,13 +94,25 @@
         let timer;
         let timeElapsed = 0;
 
+        // Start timer
         function startTimer() {
-            timer = setInterval(() => {
-                timeElapsed++;
-                document.getElementById('timer').innerText = 'Time: ' + timeElapsed;
-            }, 1000);
+            if (!timer) {
+                timer = setInterval(() => {
+                    timeElapsed++;
+                    document.getElementById('timer').innerText = 'Time: ' + timeElapsed;
+                }, 1000);
+            }
         }
 
+        // Stop timer and reset it
+        function stopTimer() {
+            clearInterval(timer);
+            timer = null;
+            timeElapsed = 0;
+            document.getElementById('timer').innerText = 'Time: 0';
+        }
+
+        // Create a card
         function createCard(cardValue, index) {
             const card = document.createElement('div');
             card.classList.add('card');
@@ -92,6 +122,7 @@
             return card;
         }
 
+        // Flip the card
         function flipCard(event) {
             const card = event.target;
 
@@ -108,7 +139,7 @@
 
             if (!isGameStarted) {
                 isGameStarted = true;
-                startTimer();
+                startTimer(); // Start the timer only when the first card is clicked
             }
 
             if (flippedCards.length === 2) {
@@ -116,6 +147,7 @@
             }
         }
 
+        // Check if two cards match
         function checkMatch() {
             const [card1, card2] = flippedCards;
 
@@ -139,7 +171,18 @@
             }
         }
 
+        // Initialize the game
         function initializeGame() {
+            // Reset the game state
+            stopTimer(); // Stop and reset the timer
+            cards = [
+                '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
+                '🍉', '🍉', '🍊', '🍊', '🍍', '🍍'
+            ]; // 6对卡片
+            cards = cards.sort(() => Math.random() - 0.5); // Shuffle cards
+            flippedCards = [];
+            matchedCards = [];
+            isGameStarted = false;
             const gameContainer = document.getElementById('game-container');
             gameContainer.innerHTML = '';
             cards.forEach((cardValue, index) => {
@@ -148,6 +191,10 @@
             });
         }
 
+        // Restart the game when the button is clicked
+        document.getElementById('restart-btn').addEventListener('click', initializeGame);
+
+        // Initialize the game on first load
         initializeGame();
     </script>
 </body>
