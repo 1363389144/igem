@@ -1,131 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>翻牌游戏</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #f0f0f0;
-        }
-      .card {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-      .card.flipped {
-            background-color: #ffcc00;
-        }
-      .score {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-      .timer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="score">得分: 0</div>
-    <div class="timer">时间: 60</div>
-    <script>
-        let score = 0;
-        let time = 60;
-        let timerInterval;
-        let flippedCards = [];
-        let matchedCards = [];
-
-        function createCards() {
-            const cardPairs = 8;
-            const cards = [];
-            for (let i = 0; i < cardPairs; i++) {
-                const card1 = document.createElement('div');
-                card1.classList.add('card');
-                card1.dataset.pattern = i;
-                cards.push(card1);
-                const card2 = document.createElement('div');
-                card2.classList.add('card');
-                card2.dataset.pattern = i;
-                cards.push(card2);
-            }
-            shuffleCards(cards);
-            cards.forEach(card => {
-                card.style.left = Math.random() * (window.innerWidth - 50) + 'px';
-                card.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-                document.body.appendChild(card);
-            });
-        }
-
-        function shuffleCards(cards) {
-            for (let i = cards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [cards[i], cards[j]] = [cards[j], cards[i]];
-            }
-        }
-
-        function flipCard(card) {
-            if (flippedCards.length < 2 &&!matchedCards.includes(card)) {
-                card.classList.add('flipped');
-                flippedCards.push(card);
-                if (flippedCards.length === 2) {
-                    checkMatch();
-                }
-            }
-        }
-
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
-            if (card1.dataset.pattern === card2.dataset.pattern) {
-                score++;
-                document.querySelector('.score').textContent = `得分: ${score}`;
-                matchedCards.push(card1, card2);
-                flippedCards = [];
-                if (matchedCards.length === 16) {
-                    clearInterval(timerInterval);
-                    alert(`游戏结束！你的最终得分是: ${score}`);
-                }
-            } else {
-                setTimeout(() => {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    flippedCards = [];
-                }, 1000);
-            }
-        }
-
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                time--;
-                document.querySelector('.timer').textContent = `时间: ${time}`;
-                if (time <= 0) {
-                    clearInterval(timerInterval);
-                    alert(`游戏结束！你的最终得分是: ${score}`);
-                }
-            }, 1000);
-        }
-
-        createCards();
-        startTimer();
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', () => {
-                flipCard(card);
-            });
-        });
-    </script>
+    <div class="container">
+        <div class="game-info">
+            <p id="time">游戏时间：0秒</p>
+            <p id="message">开始游戏</p>
+        </div>
+        <div class="board" id="board"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
