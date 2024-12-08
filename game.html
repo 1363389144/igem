@@ -14,6 +14,7 @@
             height: 100vh;
             margin: 0;
             background-color: #f7f7f7;
+            overflow: hidden;
         }
         .header {
             display: flex;
@@ -22,7 +23,7 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
-            gap: 20px; /* Add some space between the timer and the button */
+            gap: 20px;
         }
         #timer {
             font-size: 24px;
@@ -44,13 +45,14 @@
             grid-template-columns: repeat(4, 100px);
             grid-template-rows: repeat(3, 100px);
             gap: 10px;
+            margin-bottom: 20px;
         }
         .card {
             width: 100px;
             height: 100px;
             background-color: #007bff;
             color: white;
-            font-size: 32px;
+            font-size: 48px; /* Increase the font size */
             text-align: center;
             line-height: 100px;
             cursor: pointer;
@@ -73,14 +75,57 @@
             opacity: 0;
             transition: transform 1s, opacity 1s;
         }
+        #victory {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0) rotateY(180deg);
+            font-size: 60px;
+            font-weight: bold;
+            opacity: 0;
+            transition: transform 1s, opacity 1s;
+        }
+        body.victory #victory {
+            transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+            opacity: 1;
+            animation: victoryEffect 2s ease-in-out forwards;
+        }
+
+        @keyframes victoryEffect {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5) rotateY(180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotateY(90deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        .background-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            opacity: 0.1;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+    <div class="background-decoration"></div>
     <div class="header">
         <div id="timer">Time: 0</div>
         <button id="restart-btn">重新开始游戏</button>
     </div>
     <div class="game-container" id="game-container"></div>
+    <div id="victory">Victory!</div>
 
     <script>
         let cards = [
@@ -94,6 +139,16 @@
         let timer;
         let timeElapsed = 0;
 
+        // Generate random color
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
         // Start timer
         function startTimer() {
             if (!timer) {
@@ -104,10 +159,14 @@
             }
         }
 
-        // Stop timer and reset it
+        // Stop timer but don't reset it
         function stopTimer() {
             clearInterval(timer);
             timer = null;
+        }
+
+        // Reset timer and start again
+        function resetTimer() {
             timeElapsed = 0;
             document.getElementById('timer').innerText = 'Time: 0';
         }
@@ -157,8 +216,10 @@
                 matchedCards.push(card1, card2);
                 flippedCards = [];
                 if (matchedCards.length === cards.length) {
-                    clearInterval(timer);
-                    alert('恭喜！你完成了游戏！');
+                    stopTimer(); // Stop the timer when the game is over
+                    const victoryText = document.getElementById('victory');
+                    victoryText.style.color = getRandomColor(); // Change the color of "Victory!"
+                    document.body.classList.add('victory'); // Show the victory effect
                 }
             } else {
                 setTimeout(() => {
@@ -174,7 +235,10 @@
         // Initialize the game
         function initializeGame() {
             // Reset the game state
-            stopTimer(); // Stop and reset the timer
+            resetTimer(); // Reset the timer to 0
+            document.body.classList.remove('victory'); // Remove victory state
+            const victoryText = document.getElementById('victory');
+            victoryText.style.color = ''; // Reset color of victory text
             cards = [
                 '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
                 '🍉', '🍉', '🍊', '🍊', '🍍', '🍍'
