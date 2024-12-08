@@ -1,192 +1,154 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>翻牌游戏</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f4;
+            margin: 0;
+            background-color: #f7f7f7;
         }
-
-        .container {
-            text-align: center;
-        }
-
-        .game-info {
-            margin-bottom: 20px;
-        }
-
-        .board {
+        .game-container {
             display: grid;
-            grid-template-columns: repeat(6, 120px);
-            grid-template-rows: repeat(3, 120px);
+            grid-template-columns: repeat(6, 100px);
+            grid-template-rows: repeat(3, 100px);
             gap: 10px;
-            justify-content: center;
         }
-
         .card {
             width: 100px;
             height: 100px;
-            background-color: #3498db;
-            border-radius: 10px;
-            position: relative;
+            background-color: #007bff;
+            color: white;
+            font-size: 32px;
+            text-align: center;
+            line-height: 100px;
             cursor: pointer;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            transition: transform 0.5s, background-color 0.3s;
         }
-
         .card.flipped {
-            background-color: white;
+            background-color: #f7f7f7;
+            color: #007bff;
+            transform: rotateY(180deg);
         }
-
-        .card.flipped::before {
-            content: attr(data-value);
-            font-size: 2rem;
-            color: #3498db;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
         .card.matched {
-            background-color: #2ecc71;
-            cursor: not-allowed;
+            background-color: #28a745;
+            color: white;
+            transform: scale(0.5);
+            opacity: 0;
+            transition: transform 1s, opacity 1s;
         }
-
-        #message {
-            font-size: 1.5rem;
-            color: #2ecc71;
+        #timer {
+            margin-bottom: 20px;
+            font-size: 24px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="game-info">
-            <p id="time">游戏时间：0秒</p>
-            <p id="message">开始游戏</p>
-        </div>
-        <div class="board" id="board"></div>
+    <div>
+        <div id="timer">Time: 0</div>
+        <div class="game-container" id="game-container"></div>
     </div>
+
     <script>
-        // 游戏变量
-        let cards = [];
+        let cards = [
+            '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
+            '🍉', '🍉', '🍊', '🍊', '🍍', '🍍',
+            '🍒', '🍒', '🍓', '🍓', '🍑', '🍑',
+            '🍈', '🍈', '🍋', '🍋', '🍍', '🍍'
+        ].slice(0, 18); // 9对卡片
+
+        cards = cards.sort(() => Math.random() - 0.5); // Shuffle cards
+
         let flippedCards = [];
-        let matchedPairs = 0;
-        let gameStartTime = null;
-        let gameTimer = null;
-        let isGameStarted = false; // 记录游戏是否已经开始
-        let isProcessing = false; // 处理匹配期间禁止翻牌
+        let matchedCards = [];
+        let isGameStarted = false;
+        let timer;
+        let timeElapsed = 0;
 
-        // 游戏初始化
-        function initGame() {
-            const board = document.getElementById('board');
-            const timeDisplay = document.getElementById('time');
-            const messageDisplay = document.getElementById('message');
-            
-            // 重置游戏状态
-            matchedPairs = 0;
-            flippedCards = [];
-            isGameStarted = false;
-            isProcessing = false;
-            board.innerHTML = '';
-            messageDisplay.textContent = '开始游戏';
-            clearInterval(gameTimer);
-
-            // 创建卡片
-            let cardValues = [];
-            for (let i = 1; i <= 9; i++) {
-                cardValues.push(i, i); // 创建9对卡片
-            }
-            cardValues = shuffle(cardValues); // 打乱卡片顺序
-
-            // 创建并添加卡片到棋盘
-            cardValues.forEach((value, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.classList.add('card');
-                cardElement.setAttribute('data-value', value);
-                cardElement.setAttribute('data-index', index);
-                cardElement.addEventListener('click', handleCardClick);
-                board.appendChild(cardElement);
-                cards.push(cardElement);
-            });
+        function startTimer() {
+            timer = setInterval(() => {
+                timeElapsed++;
+                document.getElementById('timer').innerText = 'Time: ' + timeElapsed;
+            }, 1000);
         }
 
-        // 打乱数组顺序的函数
-        function shuffle(array) {
-            let shuffledArray = array.slice();
-            for (let i = shuffledArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-            }
-            return shuffledArray;
+        function createCard(cardValue, index) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.index = index;
+            card.dataset.value = cardValue;
+            card.addEventListener('click', flipCard);
+            return card;
         }
 
-        // 处理卡片点击事件
-        function handleCardClick(event) {
-            const clickedCard = event.target;
+        function flipCard(event) {
+            const card = event.target;
 
-            // 如果正在处理匹配，或卡片已翻开或已匹配，则不做处理
-            if (isProcessing || clickedCard.classList.contains('flipped') || clickedCard.classList.contains('matched')) {
+            // Ignore if two cards are already flipped or if the card is already matched
+            if (flippedCards.length === 2 || card.classList.contains('flipped') || matchedCards.includes(card)) {
                 return;
             }
 
-            // 开始游戏计时
+            // Flip the card
+            card.classList.add('flipped');
+            card.innerText = card.dataset.value;
+
+            flippedCards.push(card);
+
             if (!isGameStarted) {
                 isGameStarted = true;
-                gameStartTime = Date.now();
-                gameTimer = setInterval(() => {
-                    const elapsedTime = Math.floor((Date.now() - gameStartTime) / 1000);
-                    document.getElementById('time').textContent = `游戏时间：${elapsedTime}秒`;
-                }, 1000);
+                startTimer();
             }
 
-            // 翻开卡片
-            clickedCard.classList.add('flipped');
-            flippedCards.push(clickedCard);
-
-            // 如果翻开了两张卡片，检查是否匹配
             if (flippedCards.length === 2) {
-                isProcessing = true; // 禁止进一步翻牌
-                const [firstCard, secondCard] = flippedCards;
-
-                // 判断两张卡片是否匹配
-                if (firstCard.getAttribute('data-value') === secondCard.getAttribute('data-value')) {
-                    // 匹配成功
-                    firstCard.classList.add('matched');
-                    secondCard.classList.add('matched');
-                    matchedPairs++;
-
-                    if (matchedPairs === 9) {
-                        clearInterval(gameTimer);
-                        document.getElementById('message').textContent = '游戏完成！';
-                    }
-                    flippedCards = [];
-                    isProcessing = false; // 解除锁定
-                } else {
-                    // 匹配失败，翻回去
-                    setTimeout(() => {
-                        firstCard.classList.remove('flipped');
-                        secondCard.classList.remove('flipped');
-                        flippedCards = [];
-                        isProcessing = false; // 解除锁定
-                    }, 1000);
-                }
+                checkMatch();
             }
         }
 
-        // 启动游戏
-        initGame();
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.value === card2.dataset.value) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedCards.push(card1, card2);
+                flippedCards = [];
+                if (matchedCards.length === cards.length) {
+                    clearInterval(timer);
+                    alert('恭喜！你完成了游戏！');
+                }
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    card1.innerText = '';
+                    card2.innerText = '';
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function initializeGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = '';
+            cards.forEach((cardValue, index) => {
+                const card = createCard(cardValue, index);
+                gameContainer.appendChild(card);
+            });
+        }
+
+        initializeGame();
     </script>
 </body>
 </html>
