@@ -1,265 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>翻牌游戏</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-            background-color: #f7f7f7;
-            overflow: hidden;
-        }
-        .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            gap: 20px;
-        }
-        #timer {
-            font-size: 24px;
-        }
-        #restart-btn {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #restart-btn:hover {
-            background-color: #0056b3;
-        }
-        .game-container {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .card {
-            width: 100px;
-            height: 100px;
-            background-color: #007bff;
-            color: white;
-            font-size: 48px; /* Increase the font size */
-            text-align: center;
-            line-height: 100px;
-            cursor: pointer;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-            transition: transform 0.5s, background-color 0.3s;
-        }
-        .card.flipped {
-            background-color: #f7f7f7;
-            color: #007bff;
-            transform: rotateY(180deg);
-        }
-        .card.matched {
-            background-color: #28a745;
-            color: white;
-            transform: scale(0.5);
-            opacity: 0;
-            transition: transform 1s, opacity 1s;
-        }
-        #victory {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0) rotateY(180deg);
-            font-size: 60px;
-            font-weight: bold;
-            opacity: 0;
-            transition: transform 1s, opacity 1s;
-        }
-        body.victory #victory {
-            transform: translate(-50%, -50%) scale(1) rotateY(0deg);
-            opacity: 1;
-            animation: victoryEffect 2s ease-in-out forwards;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        background-color: #f7f7f7;
+        overflow: hidden;
+      }
+      .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 20px;
+        gap: 20px;
+      }
+      #timer {
+        font-size: 24px;
+      }
+      #restart-btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #restart-btn:hover {
+        background-color: #0056b3;
+      }
+      .game-container {
+        display: grid;
+        grid-template-columns: repeat(4, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .card {
+        width: 100px;
+        height: 100px;
+        background-color: #007bff;
+        color: white;
+        font-size: 48px; /* Increase the font size */
+        text-align: center;
+        line-height: 100px;
+        cursor: pointer;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform-style: preserve-3d;
+        transition: transform 0.5s, background-color 0.3s;
+      }
+      .card.flipped {
+        background-color: #f7f7f7;
+        color: #007bff;
+        transform: rotateY(180deg);
+      }
+      .card.matched {
+        background-color: #28a745;
+        color: white;
+        transform: scale(0.5);
+        opacity: 0;
+        transition: transform 1s, opacity 1s;
+      }
+      #victory {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0) rotateY(180deg);
+        font-size: 60px;
+        font-weight: bold;
+        opacity: 0;
+        transition: transform 1s, opacity 1s;
+      }
+      body.victory #victory {
+        transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+        opacity: 1;
+        animation: victoryEffect 2s ease-in-out forwards;
+      }
 
-        @keyframes victoryEffect {
-            0% {
-                transform: translate(-50%, -50%) scale(0.5) rotateY(180deg);
-                opacity: 0;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2) rotateY(90deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
-                opacity: 1;
-            }
+      @keyframes victoryEffect {
+        0% {
+          transform: translate(-50%, -50%) scale(0.5) rotateY(180deg);
+          opacity: 0;
         }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2) rotateY(90deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+          opacity: 1;
+        }
+      }
 
-        .background-decoration {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            opacity: 0.1;
-            z-index: -1;
-        }
+      .background-decoration {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        opacity: 0.1;
+        z-index: -1;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="background-decoration"></div>
     <div class="header">
-        <div id="timer">Time: 0</div>
-        <button id="restart-btn">重新开始游戏</button>
+      <div id="timer">Time: 0</div>
+      <button id="restart-btn">重新开始游戏</button>
     </div>
     <div class="game-container" id="game-container"></div>
     <div id="victory">Victory!</div>
 
     <script>
-        let cards = [
-            '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
-            '🍉', '🍉', '🍊', '🍊', '🍍', '🍍'
-        ]; // 6对卡片
+      let cards = [
+        "🍎",
+        "🍎",
+        "🍌",
+        "🍌",
+        "🍇",
+        "🍇",
+        "🍉",
+        "🍉",
+        "🍊",
+        "🍊",
+        "🍍",
+        "🍍",
+      ]; // 6对卡片
 
-        let flippedCards = [];
-        let matchedCards = [];
-        let isGameStarted = false;
-        let timer;
-        let timeElapsed = 0;
+      let flippedCards = [];
+      let matchedCards = [];
+      let isGameStarted = false;
+      let timer;
+      let timeElapsed = 0;
 
-        // Generate random color
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+      // Generate random color
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
         }
+        return color;
+      }
 
-        // Start timer
-        function startTimer() {
-            if (!timer) {
-                timer = setInterval(() => {
-                    timeElapsed++;
-                    document.getElementById('timer').innerText = 'Time: ' + timeElapsed;
-                }, 1000);
-            }
+      // Start timer
+      function startTimer() {
+        if (!timer) {
+          timer = setInterval(() => {
+            timeElapsed++;
+            document.getElementById("timer").innerText = "Time: " + timeElapsed;
+          }, 1000);
         }
+      }
 
-        // Stop timer but don't reset it
-        function stopTimer() {
-            clearInterval(timer);
-            timer = null;
-        }
+      // Stop timer but don't reset it
+      function stopTimer() {
+        clearInterval(timer);
+        timer = null;
+      }
 
-        // Reset timer and start again
-        function resetTimer() {
-            timeElapsed = 0;
-            document.getElementById('timer').innerText = 'Time: 0';
-        }
+      // Reset timer and start again
+      function resetTimer() {
+        timeElapsed = 0;
+        document.getElementById("timer").innerText = "Time: 0";
+      }
 
-        // Create a card
-        function createCard(cardValue, index) {
-            const card = document.createElement('div');
-            card.classList.add('card');
-            card.dataset.index = index;
-            card.dataset.value = cardValue;
-            card.addEventListener('click', flipCard);
-            return card;
+      // Create a card
+      function createCard(cardValue, index) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.index = index;
+        card.dataset.value = cardValue;
+        card.addEventListener("click", flipCard);
+        return card;
+      }
+
+      // Flip the card
+      function flipCard(event) {
+        const card = event.target;
+
+        // Ignore if two cards are already flipped or if the card is already matched
+        if (
+          flippedCards.length === 2 ||
+          card.classList.contains("flipped") ||
+          matchedCards.includes(card)
+        ) {
+          return;
         }
 
         // Flip the card
-        function flipCard(event) {
-            const card = event.target;
+        card.classList.add("flipped");
+        card.innerText = card.dataset.value;
 
-            // Ignore if two cards are already flipped or if the card is already matched
-            if (flippedCards.length === 2 || card.classList.contains('flipped') || matchedCards.includes(card)) {
-                return;
-            }
+        flippedCards.push(card);
 
-            // Flip the card
-            card.classList.add('flipped');
-            card.innerText = card.dataset.value;
-
-            flippedCards.push(card);
-
-            if (!isGameStarted) {
-                isGameStarted = true;
-                startTimer(); // Start the timer only when the first card is clicked
-            }
-
-            if (flippedCards.length === 2) {
-                checkMatch();
-            }
+        if (!isGameStarted) {
+          isGameStarted = true;
+          startTimer(); // Start the timer only when the first card is clicked
         }
 
-        // Check if two cards match
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
-
-            if (card1.dataset.value === card2.dataset.value) {
-                card1.classList.add('matched');
-                card2.classList.add('matched');
-                matchedCards.push(card1, card2);
-                flippedCards = [];
-                if (matchedCards.length === cards.length) {
-                    stopTimer(); // Stop the timer when the game is over
-                    const victoryText = document.getElementById('victory');
-                    victoryText.style.color = getRandomColor(); // Change the color of "Victory!"
-                    document.body.classList.add('victory'); // Show the victory effect
-                }
-            } else {
-                setTimeout(() => {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    card1.innerText = '';
-                    card2.innerText = '';
-                    flippedCards = [];
-                }, 1000);
-            }
+        if (flippedCards.length === 2) {
+          checkMatch();
         }
+      }
 
-        // Initialize the game
-        function initializeGame() {
-            // Reset the game state
-            resetTimer(); // Reset the timer to 0
-            document.body.classList.remove('victory'); // Remove victory state
-            const victoryText = document.getElementById('victory');
-            victoryText.style.color = ''; // Reset color of victory text
-            cards = [
-                '🍎', '🍎', '🍌', '🍌', '🍇', '🍇',
-                '🍉', '🍉', '🍊', '🍊', '🍍', '🍍'
-            ]; // 6对卡片
-            cards = cards.sort(() => Math.random() - 0.5); // Shuffle cards
+      // Check if two cards match
+      function checkMatch() {
+        const [card1, card2] = flippedCards;
+
+        if (card1.dataset.value === card2.dataset.value) {
+          card1.classList.add("matched");
+          card2.classList.add("matched");
+          matchedCards.push(card1, card2);
+          flippedCards = [];
+          if (matchedCards.length === cards.length) {
+            stopTimer(); // Stop the timer when the game is over
+            const victoryText = document.getElementById("victory");
+            victoryText.style.color = getRandomColor(); // Change the color of "Victory!"
+            document.body.classList.add("victory"); // Show the victory effect
+          }
+        } else {
+          setTimeout(() => {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            card1.innerText = "";
+            card2.innerText = "";
             flippedCards = [];
-            matchedCards = [];
-            isGameStarted = false;
-            const gameContainer = document.getElementById('game-container');
-            gameContainer.innerHTML = '';
-            cards.forEach((cardValue, index) => {
-                const card = createCard(cardValue, index);
-                gameContainer.appendChild(card);
-            });
+          }, 1000);
         }
+      }
 
-        // Restart the game when the button is clicked
-        document.getElementById('restart-btn').addEventListener('click', initializeGame);
+      // Initialize the game
+      function initializeGame() {
+        // Reset the game state
+        resetTimer(); // Reset the timer to 0
+        document.body.classList.remove("victory"); // Remove victory state
+        const victoryText = document.getElementById("victory");
+        victoryText.style.color = ""; // Reset color of victory text
+        cards = [
+          "🍎",
+          "🍎",
+          "🍌",
+          "🍌",
+          "🍇",
+          "🍇",
+          "🍉",
+          "🍉",
+          "🍊",
+          "🍊",
+          "🍍",
+          "🍍",
+        ]; // 6对卡片
+        cards = cards.sort(() => Math.random() - 0.5); // Shuffle cards
+        flippedCards = [];
+        matchedCards = [];
+        isGameStarted = false;
+        const gameContainer = document.getElementById("game-container");
+        gameContainer.innerHTML = "";
+        cards.forEach((cardValue, index) => {
+          const card = createCard(cardValue, index);
+          gameContainer.appendChild(card);
+        });
+      }
 
-        // Initialize the game on first load
-        initializeGame();
+      // Restart the game when the button is clicked
+      document
+        .getElementById("restart-btn")
+        .addEventListener("click", initializeGame);
+
+      // Initialize the game on first load
+      initializeGame();
     </script>
-</body>
+  </body>
 </html>
