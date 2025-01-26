@@ -1,0 +1,175 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 150px;
+}
+
+.timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 150px auto;
+    padding: 20px;
+}
+
+.timeline-row {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 100px;
+}
+
+/* 所有行的横线 */
+.timeline-row::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: #e4a853;
+    z-index: 1;
+}
+
+/* 连接竖线 - 第一行到第二行 */
+.timeline-row:first-child::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    right: 5%;
+    width: 2px;
+    height: 167px;
+    background: #e4a853;
+    z-index: 1;
+}
+
+/* 连接竖线 - 第二行到第三行 */
+.timeline-row:nth-child(2)::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 5%;
+    width: 2px;
+    height: 167px;
+    background: #e4a853;
+    z-index: 1;
+}
+
+.timeline-item {
+    position: relative;
+    width: 33.333%;
+    text-align: center;
+}
+
+.node {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: 2px solid #2196f3;
+    border-radius: 50%;
+    margin: 10px auto;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.node:hover {
+    background: #ff4444;
+    border-color: #ff4444;
+}
+
+.year {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.tooltip {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background: #333; */
+    border: 1px solid #333;
+    color: #433f3f;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: #333 transparent transparent;
+}
+
+.node:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+/* .node .tooltip {
+    visibility: visible;
+    opacity: 1;
+   
+} */
+/* 第二行反向排列 */
+.timeline-row:nth-child(2) {
+    flex-direction: row-reverse;
+}
+.tool-box1{
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    top: -110px;
+}
+.tool-box2{
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    width: 200px;
+    top: -260px;
+}
+.tooltip-img{
+    width: 100%;
+}
+.tooltip-img1{
+    width: 80%;
+    height: 180px;
+}
+.tooltip-text{
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+    .timeline {
+        padding: 10px;
+    }
+    
+    .year {
+        font-size: 12px;
+    }
+    
+    .tooltip {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+}
