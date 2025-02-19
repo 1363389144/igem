@@ -15,7 +15,7 @@
       color: rgb(42, 60, 6)
     }
 
-    /* 上部 */
+    /* 上部（含背景图） */
     header.upper {
       position: relative;
       width: 100%;
@@ -92,8 +92,63 @@
     }
 
 
+    /* 主体内容 */
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-    
+    main h2 {
+      margin-top: 40px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    /* 正文图片及标题 */
+    figure {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    figure img {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    figure figcaption {
+      font-style: italic;
+      margin-top: 5px;
+      color: #666;
+    }
+
+    /* 带背景图片的部分 */
+    .bg-div {
+      background: url('images/background2.jpeg') center/cover no-repeat;
+      padding: 50px;
+      color: #fff;
+      text-align: center;
+      margin: 40px 0;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .bg-div::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    .bg-div * {
+      position: relative;
+      z-index: 2;
+    }
   </style>
 
 
@@ -134,6 +189,38 @@
       <p>探索生物，创新驱动未来</p>
     </div>
   </header>
+
+
+
+
+
+
+
+  <main>
+    <!-- 文本段落 -->
+    <div>
+      <h2>我们的研究</h2>
+      <p>
+        在这里，我们展示团队在合成生物学领域的最新成果与项目进展。
+      </p>
+    </div>
+
+    <!-- 正文图片（含标题） -->
+    <div>
+      <figure>
+        <img src="./images/program.png" alt="硅藻酸钙">
+        <figcaption>图1：硅藻酸钙</figcaption>
+      </figure>
+    </div>
+
+    <!-- 背景图片 -->
+    <div class="bg-div">
+      <h2>背景介绍</h2>
+      <p>
+        本部分采用背景图片进行装饰，展现团队对未来生物技术的美好憧憬与坚定信念。
+      </p>
+    </div>
+
 </body>
 
 </html>
