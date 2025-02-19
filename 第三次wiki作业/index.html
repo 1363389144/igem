@@ -100,9 +100,9 @@
       display: none;
       position: absolute;
       top: 100%;
-      left: 15px;
+      left: 0;
       background-color: rgba(51, 51, 51, 0.8);
-      min-width: 20px;
+      min-width: 100%;
       border-radius: 5px;
       z-index: 3;
     }
@@ -111,6 +111,11 @@
       display: block;
     }
 
+    nav li.dropdown ul.dropdown-content li a {
+      text-align: center;
+      /* 文字居中 */
+      padding: 10px 15px;
+    }
 
     /* 主体内容 */
     main {
