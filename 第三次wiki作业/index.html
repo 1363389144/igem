@@ -8,15 +8,17 @@
 
   <!-- 引入MathJax,支持LaTeX数学公式 -->
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- 引入Lottie动画库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.7/lottie.min.js"></script>
 
   <style>
-    /*全局样式*/
+    /* 全局样式 */
     body,
     html {
       padding: 0;
       margin: 0;
       font-family: Arial;
-      color: rgb(42, 60, 6)
+      color: rgb(42, 60, 6);
     }
 
     /* 上部（含背景图） */
@@ -59,7 +61,6 @@
     .upper-content p {
       font-size: 1.2em;
     }
-
 
     /* 导航栏位于右上角 */
     .nav-container {
@@ -114,7 +115,6 @@
 
     nav li.dropdown ul.dropdown-content li a {
       text-align: center;
-      /* 文字居中 */
       padding: 10px 15px;
     }
 
@@ -209,22 +209,33 @@
       margin-right: 5px;
     }
 
+    /* 左右动画容器 */
+    #animationContainerLeft,
+    #animationContainerRight {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+      height: 150px;
+      pointer-events: none;
+      z-index: 4;
+    }
 
-    
+    #animationContainerLeft {
+      left: 0;
+    }
+
+    #animationContainerRight {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%) scaleX(-1);
+      width: 150px;
+      height: 150px;
+      pointer-events: none;
+      z-index: 4;
+      right: 0;
+    }
   </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
 </head>
 
 <body>
@@ -251,6 +262,10 @@
       <p>探索生物，创新驱动未来</p>
     </div>
   </header>
+
+  <!-- 左右固定的动画容器 -->
+  <div id="animationContainerLeft"></div>
+  <div id="animationContainerRight"></div>
 
   <main>
     <!-- 文本段落 -->
@@ -327,10 +342,27 @@
     <span>© 2025 iGEM Team. 版权所有.</span>
   </footer>
 
-
-
-
-
+  <script>
+    // 等待DOM完全加载后初始化左右动画
+    document.addEventListener('DOMContentLoaded', function () {
+      // 左侧动画
+      lottie.loadAnimation({
+        container: document.getElementById('animationContainerLeft'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: './1.json'
+      });
+      // 右侧动画
+      lottie.loadAnimation({
+        container: document.getElementById('animationContainerRight'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: './1.json'
+      });
+    });
+  </script>
 </body>
 
 </html>
