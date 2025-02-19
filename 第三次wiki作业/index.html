@@ -243,10 +243,10 @@
         <ul>
           <li><a href="#">主页</a></li>
           <li class="dropdown">
-            <a href="#">关于我们</a>
+            <a href="#">详细信息</a>
             <ul class="dropdown-content">
-              <li><a href="#">联系</a></li>
-              <li><a href="#">关于</a></li>
+              <li><a href="#form">表格</a></li>
+              <li><a href="#pdf">PDF</a></li>
             </ul>
           </li>
         </ul>
@@ -289,7 +289,7 @@
     </div>
 
     <!-- 表格 -->
-    <div>
+    <div id="form">
       <h2>项目数据统计</h2>
       <table>
         <tr>
@@ -325,7 +325,7 @@
     </div>
 
     <!-- 插入PDF -->
-    <div>
+    <div id="pdf">
       <h2>相关文档</h2>
       <p>请查看下面的PDF文档以获取更多详细信息：</p>
       <embed src="./pdf/1326_66_full_.pdf" type="application/pdf" width="100%" height="500px">
@@ -373,7 +373,7 @@
         requestAnimationFrame(scrollStep);
       }
 
-      // 点击动画容器滚动页面到顶部（0.5秒）
+      // 点击动画容器滚动页面到顶部（1.5秒）
       document.getElementById('animationContainerLeft').addEventListener('click', function () {
         scrollToTop(500);
       });
