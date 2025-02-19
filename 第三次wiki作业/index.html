@@ -217,7 +217,9 @@
       transform: translateY(-50%);
       width: 150px;
       height: 150px;
-      pointer-events: none;
+      pointer-events: auto;
+      /* 设置为 auto，允许点击 */
+      cursor: pointer;
       z-index: 4;
     }
 
@@ -226,14 +228,8 @@
     }
 
     #animationContainerRight {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%) scaleX(-1);
-      width: 150px;
-      height: 150px;
-      pointer-events: none;
-      z-index: 4;
       right: 0;
+      transform: translateY(-50%) scaleX(-1);
     }
   </style>
 </head>
@@ -343,7 +339,7 @@
   </footer>
 
   <script>
-    // 等待DOM完全加载后初始化左右动画
+    // 初始化动画
     document.addEventListener('DOMContentLoaded', function () {
       // 左侧动画
       lottie.loadAnimation({
@@ -361,7 +357,31 @@
         autoplay: true,
         path: './1.json'
       });
+
+      // 自定义平滑滚动到顶部函数
+      function scrollToTop(duration) {
+        const start = window.scrollY;
+        const startTime = performance.now();
+        function scrollStep(timestamp) {
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          window.scrollTo(0, start * (1 - progress));
+          if (progress < 1) {
+            requestAnimationFrame(scrollStep);
+          }
+        }
+        requestAnimationFrame(scrollStep);
+      }
+
+      // 点击动画容器滚动页面到顶部（1.5秒）
+      document.getElementById('animationContainerLeft').addEventListener('click', function () {
+        scrollToTop(500);
+      });
+      document.getElementById('animationContainerRight').addEventListener('click', function () {
+        scrollToTop(500);
+      });
     });
+
   </script>
 </body>
 
