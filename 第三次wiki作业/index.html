@@ -15,6 +15,7 @@
     html {
       padding: 0;
       margin: 0;
+      font-family: Arial;
       color: rgb(42, 60, 6)
     }
 
@@ -72,7 +73,7 @@
     nav {
       background-color: rgba(51, 51, 51, 0.8);
       border-radius: 5px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     nav ul {
@@ -92,6 +93,22 @@
       color: #fff;
       text-decoration: none;
       white-space: nowrap;
+    }
+
+    /* 添加下拉菜单 */
+    nav li.dropdown ul.dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 15px;
+      background-color: rgba(51, 51, 51, 0.8);
+      min-width: 20px;
+      border-radius: 5px;
+      z-index: 3;
+    }
+
+    nav li.dropdown:hover ul.dropdown-content {
+      display: block;
     }
 
 
@@ -153,8 +170,8 @@
       z-index: 2;
     }
 
-/* 表格样式 */
-table {
+    /* 表格样式 */
+    table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
@@ -279,13 +296,13 @@ table {
     </div>
 
     <!-- LaTeX数学公式 -->
-  <div>
-    <h3>数学公式示例</h3>
-    <p>下面是一个定积分公式：</p>
-    <p>
-      $$\int_0^\infty e^{-x} \,dx = 1$$
-    </p>
-  </div>
+    <div>
+      <h3>数学公式示例</h3>
+      <p>下面是一个定积分公式：</p>
+      <p>
+        $$\int_0^\infty e^{-x} \,dx = 1$$
+      </p>
+    </div>
 
     <!-- 插入PDF -->
     <div>
