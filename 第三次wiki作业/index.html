@@ -123,6 +123,7 @@
       padding: 40px 20px;
       max-width: 1000px;
       margin: 0 auto;
+      position: relative;
     }
 
     main h2 {
@@ -231,6 +232,25 @@
       right: 0;
       transform: translateY(-50%) scaleX(-1);
     }
+
+    /* 装饰性图片样式 */
+    .decorative-image-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+    }
+
+
+    .decorative-image-right {
+      right: -180px;
+    }
+
+
+    .decorative-image-right img {
+      width: 100%;
+      height: auto;
+    }
   </style>
 </head>
 
@@ -264,6 +284,11 @@
   <div id="animationContainerRight"></div>
 
   <main>
+    <!-- 装饰性图片 -->
+    <div class="decorative-image-right">
+      <img src="images/decorative.jpg" alt="装饰图片">
+    </div>
+
     <!-- 文本段落 -->
     <div>
       <h2>我们的研究</h2>
