@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iGEM Wiki</title>
+
+  <!-- 引入MathJax,支持LaTeX数学公式 -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- 引入Lottie动画库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.7/lottie.min.js"></script>
+
+  <style>
+    /* 全局样式 */
+    body,
+    html {
+      padding: 0;
+      margin: 0;
+      font-family: Arial;
+      color: rgb(42, 60, 6);
+    }
+
+    /* 上部（含背景图） */
+    header.upper {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      background: url('images/background.jpeg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 遮大图，降亮度 */
+    header.upper::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(51, 51, 51, 0.4);
+      z-index: 1;
+    }
+
+    /* 大块文本位于遮层之上 */
+    .upper-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+    }
+
+    .upper-content h1 {
+      font-size: 3em;
+      margin: 0.2em 0;
+    }
+
+    .upper-content p {
+      font-size: 1.2em;
+    }
+
+    /* 导航栏位于右上角 */
+    .nav-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 3;
+    }
+
+    /* 导航栏样式 */
+    nav {
+      background-color: rgba(51, 51, 51, 0.8);
+      border-radius: 5px;
+      overflow: visible;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav li a {
+      display: block;
+      padding: 10px 15px;
+      color: #fff;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    /* 添加下拉菜单 */
+    nav li.dropdown ul.dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: rgba(51, 51, 51, 0.8);
+      min-width: 100%;
+      border-radius: 0 0 5px 5px;
+      z-index: 3;
+      margin-top: -1px;
+    }
+
+    nav li.dropdown:hover ul.dropdown-content {
+      display: block;
+    }
+
+    nav li.dropdown ul.dropdown-content li a {
+      text-align: center;
+      padding: 10px 15px;
+    }
+
+    /* 主体内容 */
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    main h2 {
+      margin-top: 40px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    /* 正文图片及标题 */
+    figure {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    figure img {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    figure figcaption {
+      font-style: italic;
+      margin-top: 5px;
+      color: #666;
+    }
+
+    /* 带背景图片的部分 */
+    .bg-div {
+      background: url('images/background2.jpeg') center/cover no-repeat;
+      padding: 50px;
+      color: #fff;
+      text-align: center;
+      margin: 40px 0;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .bg-div::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    .bg-div * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 表格样式 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    /* 底部版权声明 */
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    footer img {
+      width: 150px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    /* 左右动画容器 */
+    #animationContainerLeft,
+    #animationContainerRight {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+      height: 150px;
+      pointer-events: auto;
+      /* 设置为 auto，允许点击 */
+      cursor: pointer;
+      z-index: 4;
+    }
+
+    #animationContainerLeft {
+      left: 0;
+    }
+
+    #animationContainerRight {
+      right: 0;
+      transform: translateY(-50%) scaleX(-1);
+    }
+
+    /* 装饰性图片样式 */
+    .decorative-image-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+    }
+
+
+    .decorative-image-right {
+      right: -180px;
+    }
+
+
+    .decorative-image-right img {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 上部 -->
+  <header class="upper">
+    <!-- 导航栏（右上角） -->
+    <div class="nav-container">
+      <nav>
+        <ul>
+          <li><a href="#">主页</a></li>
+          <li class="dropdown">
+            <a href="#">详细信息</a>
+            <ul class="dropdown-content">
+              <li><a href="#form">表格</a></li>
+              <li><a href="#pdf">PDF</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!-- 上部大块文本 -->
+    <div class="upper-content">
+      <h1>iGEM合成生物学</h1>
+      <p>探索生物，创新驱动未来</p>
+    </div>
+  </header>
+
+  <!-- 左右固定的动画容器 -->
+  <div id="animationContainerLeft"></div>
+  <div id="animationContainerRight"></div>
+
+  <main>
+    <!-- 装饰性图片 -->
+    <div class="decorative-image-right">
+      <img src="images/decorative.jpg" alt="装饰图片">
+    </div>
+
+    <!-- 文本段落 -->
+    <div>
+      <h2>我们的研究</h2>
+      <p>
+        在这里，我们展示团队在合成生物学领域的最新成果与项目进展。
+      </p>
+    </div>
+
+    <!-- 正文图片（含标题） -->
+    <div>
+      <figure>
+        <img src="./images/program.png" alt="硅藻酸钙">
+        <figcaption>图1：硅藻酸钙</figcaption>
+      </figure>
+    </div>
+
+    <!-- 背景图片 -->
+    <div class="bg-div">
+      <h2>背景介绍</h2>
+      <p>
+        本部分采用背景图片进行装饰，展现团队对未来生物技术的美好憧憬与坚定信念。
+      </p>
+    </div>
+
+    <!-- 表格 -->
+    <div id="form">
+      <h2>项目数据统计</h2>
+      <table>
+        <tr>
+          <th>团队</th>
+          <th>项目名称</th>
+          <th>得分</th>
+        </tr>
+        <tr>
+          <td>Team A</td>
+          <td>重金属修复</td>
+          <td>90</td>
+        </tr>
+        <tr>
+          <td>Team B</td>
+          <td>微塑料修复</td>
+          <td>90</td>
+        </tr>
+        <tr>
+          <td>Team C</td>
+          <td>鱼类肠道修复</td>
+          <td>80</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- LaTeX数学公式 -->
+    <div>
+      <h3>数学公式示例</h3>
+      <p>下面是一个定积分公式：</p>
+      <p>
+        $$\int_0^\infty e^{-x} \,dx = 1$$
+      </p>
+    </div>
+
+    <!-- 插入PDF -->
+    <div id="pdf">
+      <h2>相关文档</h2>
+      <p>请查看下面的PDF文档以获取更多详细信息：</p>
+      <embed src="./pdf/1326_66_full_.pdf" type="application/pdf" width="100%" height="500px">
+    </div>
+  </main>
+
+  <!-- 底部版权声明 -->
+  <footer>
+    <img src="./images/school-logo.png" alt="学校logo">
+    <span>© 2025 iGEM Team. 版权所有.</span>
+  </footer>
+
+  <script>
+    // 初始化动画
+    document.addEventListener('DOMContentLoaded', function () {
+      // 左侧动画
+      lottie.loadAnimation({
+        container: document.getElementById('animationContainerLeft'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: './1.json'
+      });
+      // 右侧动画
+      lottie.loadAnimation({
+        container: document.getElementById('animationContainerRight'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: './1.json'
+      });
+
+      // 自定义平滑滚动到顶部函数
+      function scrollToTop(duration) {
+        const start = window.scrollY;
+        const startTime = performance.now();
+        function scrollStep(timestamp) {
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          window.scrollTo(0, start * (1 - progress));
+          if (progress < 1) {
+            requestAnimationFrame(scrollStep);
+          }
+        }
+        requestAnimationFrame(scrollStep);
+      }
+
+      // 点击动画容器滚动页面到顶部（0.5秒）
+      document.getElementById('animationContainerLeft').addEventListener('click', function () {
+        scrollToTop(500);
+      });
+      document.getElementById('animationContainerRight').addEventListener('click', function () {
+        scrollToTop(500);
+      });
+    });
+
+  </script>
+</body>
+
+</html>
